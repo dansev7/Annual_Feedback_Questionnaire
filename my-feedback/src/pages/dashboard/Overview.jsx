@@ -124,7 +124,7 @@ const Overview = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex flex-col gap-2">
           <h2 className="text-3xl font-black text-slate-800 tracking-tight">Executive Summary</h2>
-          <p className="text-slate-500 font-medium">Evaluation and feedback insights for Dr. Admikew Center, managed by Anbes G Business Group.</p>
+          <p className="text-slate-500 font-medium">Evaluation and feedback insights for Dr. Admikew Medical & Surgical Center, managed by Anbes G Business Group.</p>
         </div>
         <div className="flex items-center gap-3 bg-white px-6 py-3 rounded-2xl shadow-sm border border-slate-100">
           <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
