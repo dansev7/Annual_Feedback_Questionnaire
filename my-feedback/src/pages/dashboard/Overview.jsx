@@ -81,10 +81,17 @@ const Overview = () => {
         }
       });
       const percentage = totalResponses ? Math.round((totalYes / totalResponses) * 100) : 0;
+
+      const isInternal = sec === 'pulseInternal';
       return {
-        name: sec === 'pulseInternal' ? 'Internal Ops' : 'External Growth',
+        id: sec,
+        name: isInternal ? 'Pulse Check Internal' : 'Pulse Check External',
+        desc: isInternal
+          ? 'Safety, protocols, and supply stability.'
+          : 'Growth, training, and competition readiness.',
         value: percentage,
-        color: sec === 'pulseInternal' ? '#f43f5e' : '#0ea5e9'
+        color: isInternal ? '#f43f5e' : '#0ea5e9',
+        status: percentage > 80 ? 'Optimal' : percentage > 50 ? 'Stable' : 'Critical'
       };
     });
   };
@@ -166,48 +173,73 @@ const Overview = () => {
           </div>
         </div>
 
-        {/* Pulse Strategic Summary */}
-        <div className="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100 flex flex-col">
-          <h3 className="text-xl font-black text-slate-800 mb-8 flex items-center gap-3">
-            <div className="bg-indigo-100 p-2 rounded-xl"><Activity size={24} className="text-indigo-600" /></div>
-            Strategic Health
-          </h3>
-
-          <div className="space-y-6 flex-1">
-            {getPulseSummary().map((item, i) => (
-              <div key={i} className="space-y-2">
-                <div className="flex justify-between items-end">
-                  <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">{item.name}</span>
-                  <span className="text-lg font-black text-slate-800">{item.value}%</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+          {/* Pulse Check Internal Card */}
+          {getPulseSummary().map((item, i) => (
+            <div key={i} className="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100 flex flex-col hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between mb-6">
+                <div className={`p-2 rounded-xl ${item.id === 'pulseInternal' ? 'bg-rose-50' : 'bg-sky-50'}`}>
+                  <Activity size={20} className={item.id === 'pulseInternal' ? 'text-rose-500' : 'text-sky-500'} />
                 </div>
-                <div className="h-3 bg-slate-50 rounded-full overflow-hidden shadow-inner">
+                <span className={`text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded-lg ${item.status === 'Optimal' ? 'bg-emerald-50 text-emerald-600' :
+                    item.status === 'Stable' ? 'bg-amber-50 text-amber-600' : 'bg-rose-50 text-rose-600'
+                  }`}>{item.status}</span>
+              </div>
+
+              <div className="flex-1">
+                <h4 className="text-sm font-black text-slate-800 uppercase tracking-tight mb-1">{item.name}</h4>
+                <p className="text-[10px] text-slate-400 font-bold leading-tight mb-6">{item.desc}</p>
+
+                <div className="flex items-end justify-between mb-2">
+                  <span className="text-3xl font-black text-slate-800 tabular-nums">{item.value}<span className="text-sm text-slate-400 ml-0.5">%</span></span>
+                </div>
+
+                <div className="h-4 bg-slate-50 rounded-2xl overflow-hidden shadow-inner p-1 border border-slate-100/50">
                   <div
-                    className="h-full transition-all duration-1000"
+                    className="h-full rounded-xl transition-all duration-1000 shadow-sm"
                     style={{ width: `${item.value}%`, backgroundColor: item.color }}
                   />
                 </div>
               </div>
-            ))}
 
-            <div className="mt-8 p-6 bg-slate-50 rounded-[2rem] border border-dashed border-slate-200">
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 text-center">Top Strategic Confidence</p>
-              <div className="grid grid-cols-2 gap-4">
-                {getStrategicAverages().slice(0, 2).map((s, i) => (
-                  <div key={i} className="flex flex-col items-center">
-                    <span className="text-2xl font-black text-indigo-600">{s.A}</span>
-                    <span className="text-[9px] font-bold text-slate-500 uppercase text-center leading-tight">{s.subject}</span>
-                  </div>
-                ))}
+              <button
+                onClick={() => window.location.href = item.id === 'pulseInternal' ? '/ad@results/pulse' : '/ad@results/pulse'}
+                className="mt-6 flex items-center gap-2 text-[9px] font-black text-slate-400 uppercase tracking-widest hover:text-sky-600 transition-colors group"
+              >
+                Analyze Metrics
+                <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+          ))}
+
+          {/* Future Outlook / Confidence Card */}
+          <div className="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100 flex flex-col">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-10 h-10 rounded-2xl bg-indigo-50 flex items-center justify-center">
+                <TrendingUp size={20} className="text-indigo-500" />
+              </div>
+              <div>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Growth Outlook</p>
+                <h3 className="text-sm font-black text-slate-800">Admin Confidence</h3>
               </div>
             </div>
-          </div>
 
-          <button
-            onClick={() => window.location.href = '/results/pulse'}
-            className="mt-8 w-full py-4 bg-slate-800 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-sky-600 transition-colors shadow-lg shadow-slate-200"
-          >
-            Review Strategy
-          </button>
+            <div className="grid grid-cols-2 gap-4 flex-1">
+              {getStrategicAverages().slice(0, 2).map((s, i) => (
+                <div key={i} className="flex flex-col p-4 bg-slate-50 rounded-[2rem] border border-slate-100 hover:bg-white hover:border-indigo-100 transition-all group">
+                  <span className="text-2xl font-black text-indigo-600 leading-none mb-1 group-hover:scale-110 transition-transform origin-left">{s.A}</span>
+                  <span className="text-[8px] font-black text-slate-400 uppercase tracking-tighter leading-tight">{s.subject}</span>
+                </div>
+              ))}
+            </div>
+
+            <button
+              onClick={() => window.location.href = '/ad@results/pulse'}
+              className="mt-6 w-full py-3 bg-slate-800 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-indigo-600 transition-all shadow-lg shadow-slate-200"
+            >
+              Review Strategy
+            </button>
+          </div>
         </div>
       </div>
 
@@ -281,7 +313,7 @@ const Overview = () => {
               </div>
             ))}
             <button
-              onClick={() => window.location.href = '/results/responses'}
+              onClick={() => window.location.href = '/ad@results/responses'}
               className="w-full py-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] hover:text-sky-600 transition-colors pt-6"
             >
               View All Responses
