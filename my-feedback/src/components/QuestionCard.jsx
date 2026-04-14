@@ -9,7 +9,10 @@ const QuestionCard = ({
   index,
   total,
   yesText = 'Yes',
-  noText = 'No'
+  noText = 'No',
+  required = false,
+  error = false,
+  errorMessage = "This field is required"
 }) => {
   const isScale = type === 'scale';
   const isBinary = type === 'binary';
@@ -33,7 +36,7 @@ const QuestionCard = ({
     <div className={`p-6 rounded-2xl border transition-all duration-300 mb-4 bg-white shadow-sm hover:shadow-md ${index !== undefined ? 'animate-fade-in-up' : ''}`}
          style={{ animationDelay: `${(index % 5) * 100}ms` }}>
       <p className="text-lg font-medium text-slate-800 mb-6 leading-relaxed">
-        {question}
+        {question} {required && <span className="text-rose-500 font-bold">*</span>}
       </p>
 
       {isScale && (
@@ -78,6 +81,13 @@ const QuestionCard = ({
           className="w-full p-4 rounded-xl border-2 border-slate-100 bg-slate-50 focus:border-sky-400 focus:bg-white focus:ring-4 focus:ring-sky-100 transition-all outline-none text-slate-700 font-medium"
           placeholder="Type your response here..."
         />
+      )}
+
+      {error && (
+        <p className="mt-4 text-rose-500 text-sm font-semibold animate-fade-in flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+          {errorMessage}
+        </p>
       )}
     </div>
   );

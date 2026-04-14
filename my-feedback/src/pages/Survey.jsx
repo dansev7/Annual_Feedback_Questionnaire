@@ -32,16 +32,77 @@ const Survey = () => {
   const [formData, setFormData] = useState({});
   const [isAnimating, setIsAnimating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState({});
   const [submitError, setSubmitError] = useState(null);
 
   const t = translations[lang];
   const totalSteps = 10;
 
+  const validateStep = (currentStep) => {
+    let newErrors = {};
+    
+    switch (currentStep) {
+      case 1: // Demographics
+        if (!formData.role) newErrors.role = true;
+        break;
+      case 2: // Strengths
+        t.sections.strengths.questions.forEach((_, idx) => {
+          if (!formData[`strengths_${idx}`]) newErrors[`strengths_${idx}`] = true;
+        });
+        break;
+      case 3: // Weaknesses
+        t.sections.weaknesses.questions.forEach((_, idx) => {
+          if (!formData[`weaknesses_${idx}`]) newErrors[`weaknesses_${idx}`] = true;
+        });
+        break;
+      case 4: // Opportunities
+        t.sections.opportunities.questions.forEach((_, idx) => {
+          if (!formData[`opportunities_${idx}`]) newErrors[`opportunities_${idx}`] = true;
+        });
+        break;
+      case 5: // Threats
+        t.sections.threats.questions.forEach((_, idx) => {
+          if (!formData[`threats_${idx}`]) newErrors[`threats_${idx}`] = true;
+        });
+        break;
+      case 6: // Pulse Internal
+        t.sections.pulseInternal.questions.forEach((_, idx) => {
+          if (!formData[`pulseInternal_${idx}`]) newErrors[`pulseInternal_${idx}`] = true;
+        });
+        break;
+      case 7: // Pulse External
+        t.sections.pulseExternal.questions.forEach((_, idx) => {
+          if (!formData[`pulseExternal_${idx}`]) newErrors[`pulseExternal_${idx}`] = true;
+        });
+        break;
+      case 8: // Open Feedback
+        break; // All optional
+      case 9: // Strategic
+        t.sections.strategic.questions.forEach((_, idx) => {
+          if (!formData[`strategic_${idx}`]) newErrors[`strategic_${idx}`] = true;
+        });
+        break;
+      default:
+        break;
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const updateFormData = (key, value) => {
     setFormData(prev => ({ ...prev, [key]: value }));
+    if (errors[key]) {
+      setErrors(prev => {
+        const next = { ...prev };
+        delete next[key];
+        return next;
+      });
+    }
   };
 
   const handleSubmit = async () => {
+    if (!validateStep(step)) return;
     setIsSubmitting(true);
     setSubmitError(null);
     try {
@@ -66,6 +127,7 @@ const Survey = () => {
   };
 
   const nextStep = () => {
+    if (step > 0 && !validateStep(step)) return;
     setIsAnimating(true);
     setTimeout(() => {
       setStep(prev => Math.min(prev + 1, totalSteps));
@@ -119,11 +181,12 @@ const Survey = () => {
         <UserCircle size={32} className="text-sky-500" />
         <h2 className="text-3xl font-bold text-slate-900">{t.sections.demographics.title}</h2>
       </div>
-      <p className="text-slate-500 mb-10">{t.optional}</p>
       
       <div className="space-y-8">
         <div className="space-y-3">
-          <label className="text-sm font-bold text-slate-700 uppercase tracking-wider">{t.sections.demographics.dept}</label>
+          <label className="text-sm font-bold text-slate-700 uppercase tracking-wider">
+            {t.sections.demographics.dept} <span className="text-slate-400 font-normal lowercase italic">{t.optional}</span>
+          </label>
           <input
             type="text"
             value={formData.department || ''}
@@ -134,7 +197,9 @@ const Survey = () => {
         </div>
 
         <div className="space-y-4">
-          <label className="text-sm font-bold text-slate-700 uppercase tracking-wider">{t.sections.demographics.role}</label>
+          <label className="text-sm font-bold text-slate-700 uppercase tracking-wider">
+            {t.sections.demographics.role} <span className="text-rose-500 font-bold">*</span>
+          </label>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {t.sections.demographics.roles.map((role) => (
               <button
@@ -142,13 +207,21 @@ const Survey = () => {
                 onClick={() => updateFormData('role', role)}
                 className={`p-4 rounded-2xl border-2 text-left font-semibold transition-all duration-200 ${formData.role === role
                     ? 'bg-sky-600 border-sky-600 text-white shadow-lg shadow-sky-100'
-                    : 'bg-white border-slate-100 text-slate-600 hover:border-sky-200 hover:bg-sky-50/50'
+                    : errors.role 
+                      ? 'bg-rose-50 border-rose-200 text-rose-600'
+                      : 'bg-white border-slate-100 text-slate-600 hover:border-sky-200 hover:bg-sky-50/50'
                   }`}
               >
                 {role}
               </button>
             ))}
           </div>
+          {errors.role && (
+            <p className="mt-2 text-rose-500 text-sm font-semibold animate-fade-in flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+              {t.fieldRequired}
+            </p>
+          )}
         </div>
       </div>
     </div>
@@ -190,6 +263,9 @@ const Survey = () => {
               value={formData[`${key}_${idx}`]}
               onChange={(val) => updateFormData(`${key}_${idx}`, val)}
               colorTheme={theme}
+              required={true}
+              error={errors[`${key}_${idx}`]}
+              errorMessage={t.fieldRequired}
             />
           ))}
         </div>
@@ -219,6 +295,9 @@ const Survey = () => {
               colorTheme="sky"
               yesText={t.yes}
               noText={t.no}
+              required={true}
+              error={errors[`${key}_${idx}`]}
+              errorMessage={t.fieldRequired}
             />
           ))}
         </div>
@@ -266,6 +345,9 @@ const Survey = () => {
             value={formData[`strategic_${idx}`]}
             onChange={(val) => updateFormData(`strategic_${idx}`, val)}
             colorTheme="sky"
+            required={true}
+            error={errors[`strategic_${idx}`]}
+            errorMessage={t.fieldRequired}
           />
         ))}
       </div>

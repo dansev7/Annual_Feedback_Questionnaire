@@ -14,6 +14,8 @@ export const translations = {
     yesNoLegend: "Please answer Yes or No",
     yes: "Yes",
     no: "No",
+    requiredError: "Please answer all required questions before proceeding.",
+    fieldRequired: "This field is required. Please fill it.",
     sections: {
       demographics: {
         title: "Basic Information",
@@ -131,6 +133,8 @@ export const translations = {
     yesNoLegend: "እባክዎ አዎ ወይም አይ በማለት ይመልሱ",
     yes: "አዎ",
     no: "አይ",
+    requiredError: "እባክዎ ከመቀጠልዎ በፊት ሁሉንም አስፈላጊ ጥያቄዎች ይመልሱ።",
+    fieldRequired: "ይህ መስክ አስፈላጊ ነው። እባክዎ ይሙሉት።",
     sections: {
       demographics: {
         title: "መሠረታዊ መረጃ",
