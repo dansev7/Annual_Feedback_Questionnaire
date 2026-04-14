@@ -12,8 +12,8 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<Survey />} />
-        <Route path="/results" element={<DashboardLayout />}>
-          <Route index element={<Navigate to="/results/overview" replace />} />
+        <Route path="/ad@results" element={<DashboardLayout />}>
+          <Route index element={<Navigate to="/ad@results/overview" replace />} />
           <Route path="overview" element={<Overview />} />
           <Route path="responses" element={<Responses />} />
           <Route path="swot" element={<SWOTDeepDive />} />

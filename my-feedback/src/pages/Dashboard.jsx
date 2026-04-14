@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../firebase';
 import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
 import {
-  LayoutDashboard, Users, BarChart3, PieChart, MessageSquare, 
+  LayoutDashboard, Users, BarChart3, PieChart, MessageSquare,
   ArrowLeft, LogOut, Search, Filter, ChevronRight, Menu, X, Activity
 } from 'lucide-react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
@@ -42,7 +42,7 @@ const DashboardLayout = () => {
     docs.forEach(doc => {
       depts.add(doc.department || 'Unknown');
       roles[doc.role] = (roles[doc.role] || 0) + 1;
-      
+
       for (let i = 0; i < 7; i++) {
         const val = doc[`strengths_${i}`];
         if (val) {
@@ -61,10 +61,10 @@ const DashboardLayout = () => {
   };
 
   const menuItems = [
-    { path: '/results/overview', icon: <LayoutDashboard size={20} />, label: 'Overview' },
-    { path: '/results/responses', icon: <Users size={20} />, label: 'Responses' },
-    { path: '/results/swot', icon: <BarChart3 size={20} />, label: 'SWOT Analysis' },
-    { path: '/results/pulse', icon: <Activity size={20} />, label: 'Pulse & Strategy' }
+    { path: '/ad@results/overview', icon: <LayoutDashboard size={20} />, label: 'Overview' },
+    { path: '/ad@results/responses', icon: <Users size={20} />, label: 'Responses' },
+    { path: '/ad@results/swot', icon: <BarChart3 size={20} />, label: 'SWOT Analysis' },
+    { path: '/ad@results/pulse', icon: <Activity size={20} />, label: 'Pulse & Strategy' }
   ];
 
   if (loading) {
@@ -82,21 +82,21 @@ const DashboardLayout = () => {
     <div className="min-h-screen bg-slate-50 flex font-sans overflow-hidden">
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
-      <aside 
+      <aside
         className={`fixed inset-y-0 left-0 bg-white border-r border-slate-100 z-50 transform transition-all duration-300 lg:translate-x-0 lg:static lg:inset-auto 
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
           ${isCollapsed ? 'w-24' : 'w-72'}`}
       >
         <div className="flex flex-col h-full relative">
           {/* Collapse Toggle Button (Gemini Style) */}
-          <button 
+          <button
             onClick={() => setIsCollapsed(!isCollapsed)}
             className="hidden lg:flex absolute -right-3 top-24 w-6 h-6 bg-white border border-slate-100 rounded-full items-center justify-center shadow-sm text-slate-400 hover:text-sky-600 hover:scale-110 transition-all z-10"
           >
@@ -117,15 +117,14 @@ const DashboardLayout = () => {
                   key={item.path}
                   to={item.path}
                   onClick={() => setSidebarOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all group relative ${
-                    location.pathname === item.path
+                  className={`flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all group relative ${location.pathname === item.path
                       ? 'bg-sky-50 text-sky-600 shadow-sm'
                       : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
-                  } ${isCollapsed ? 'justify-center px-0 w-12 h-12 mx-auto' : ''}`}
+                    } ${isCollapsed ? 'justify-center px-0 w-12 h-12 mx-auto' : ''}`}
                 >
                   <span className="shrink-0">{item.icon}</span>
                   {!isCollapsed && <span className="whitespace-nowrap">{item.label}</span>}
-                  
+
                   {/* Tooltip for collapsed state */}
                   {isCollapsed && (
                     <div className="absolute left-full ml-4 px-3 py-1 bg-slate-800 text-white text-[10px] uppercase tracking-widest font-black rounded-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap">
@@ -156,50 +155,15 @@ const DashboardLayout = () => {
         {/* Top Navbar */}
         <header className="h-20 bg-white/80 backdrop-blur-md border-b border-slate-100 flex items-center justify-between px-4 md:px-8 sticky top-0 z-30">
           <div className="flex items-center gap-4">
-            <button 
+            <button
               className="p-2 -ml-2 text-slate-600 lg:hidden"
               onClick={() => setSidebarOpen(true)}
             >
               <Menu size={24} />
             </button>
-            <div className="hidden lg:flex items-center bg-slate-50 rounded-2xl px-4 py-2 border border-slate-100 group focus-within:bg-white focus-within:border-sky-300 transition-all w-96">
-              <Search size={18} className="text-slate-400 group-focus-within:text-sky-500 transition-colors" />
-              <input 
-                type="text" 
-                placeholder="Search staff, departments, or insights..." 
-                className="bg-transparent border-none focus:ring-0 text-sm font-medium text-slate-600 placeholder:text-slate-400 w-full ml-2"
-              />
-              <div className="flex items-center gap-1">
-                 <kbd className="hidden sm:inline-block px-1.5 py-0.5 border border-slate-200 rounded text-[10px] font-black text-slate-400 bg-white shadow-sm">⌘</kbd>
-                 <kbd className="hidden sm:inline-block px-1.5 py-0.5 border border-slate-200 rounded text-[10px] font-black text-slate-400 bg-white shadow-sm">K</kbd>
-              </div>
-            </div>
           </div>
 
           <div className="flex items-center gap-2 md:gap-6">
-            <div className="flex items-center gap-1 md:gap-3">
-               <button className="p-2.5 text-slate-400 hover:text-sky-600 hover:bg-sky-50 rounded-xl transition-all relative group">
-                  <Activity size={20} />
-                  <span className="absolute top-2 right-2 w-2 h-2 bg-emerald-500 rounded-full border-2 border-white"></span>
-                  <div className="absolute top-full mt-2 right-0 w-64 bg-white border border-slate-100 shadow-2xl rounded-2xl p-4 opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Live Feed</p>
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
-                        <p className="text-xs font-bold text-slate-600">New response from HR Unit</p>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="w-1.5 h-1.5 bg-sky-500 rounded-full"></div>
-                        <p className="text-xs font-bold text-slate-600">Analytic sync completed</p>
-                      </div>
-                    </div>
-                  </div>
-               </button>
-               <button className="hidden sm:flex p-2.5 text-slate-400 hover:text-sky-600 hover:bg-sky-50 rounded-xl transition-all">
-                  <Filter size={20} />
-               </button>
-            </div>
-
             <div className="w-[1px] h-8 bg-slate-100 hidden md:block"></div>
 
             <div className="flex items-center gap-4">
@@ -209,7 +173,7 @@ const DashboardLayout = () => {
               </div>
               <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-indigo-500 via-sky-500 to-emerald-500 border-2 border-white shadow-xl shadow-sky-100 overflow-hidden flex items-center justify-center p-0.5 hover:scale-105 transition-transform cursor-pointer">
                 <div className="w-full h-full rounded-lg overflow-hidden bg-white flex items-center justify-center">
-                   <img src="https://ui-avatars.com/api/?name=AG&background=0ea5e9&color=fff&bold=true&font-size=0.45" alt="Anbes G Business Group" className="w-full h-full object-cover" />
+                  <img src="https://ui-avatars.com/api/?name=AG&background=0ea5e9&color=fff&bold=true&font-size=0.45" alt="Anbes G Business Group" className="w-full h-full object-cover" />
                 </div>
               </div>
             </div>
